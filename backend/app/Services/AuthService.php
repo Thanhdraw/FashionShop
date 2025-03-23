@@ -24,17 +24,18 @@ class AuthService implements AuthServiceInterface
     public function login(array $credentials)
     {
         if (!Auth::attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return false; // Trả về false nếu đăng nhập thất bại
         }
 
         $user = Auth::user();
-
         $token = $user->createToken('auth_token')->plainTextToken;
-        return response()->json([
-            'message' => 'Login successful',
+
+        return [
+            'user' => $user, // Trả về thông tin user
             'token' => $token
-        ]);
+        ];
     }
+
 
     public function logout(Request $request)
     {

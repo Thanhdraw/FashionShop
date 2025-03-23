@@ -46,8 +46,20 @@ class AuthController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-        return $this->authService->login($request->only('email', 'password'));
+        $loginData = $this->authService->login($request->only('email', 'password'));
+
+        if (!$loginData) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        return response()->json([
+            'message' => 'Login successful',
+            'user' => $loginData['user'],
+            'token' => $loginData['token']
+        ]);
     }
+
+
 
     public function logout(Request $request)
     {
