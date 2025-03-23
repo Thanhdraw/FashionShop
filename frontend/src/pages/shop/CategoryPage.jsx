@@ -1,4 +1,5 @@
 import { useParams } from "react-router-dom";
+import ProductList from "../../components/common/ProductList";
 
 const categories = [
   {
@@ -80,6 +81,7 @@ const CategoryPage = () => {
             Xem tất cả danh mục
           </a>
         </div>
+        <ProductList />
       </div>
     </div>
   );

@@ -30,7 +30,7 @@ export default function Home() {
             >
               <div className="overflow-hidden">
                 <img
-                  src="/api/placeholder/400/320"
+                  src="https://product.hstatic.net/1000304105/product/ao-so-mi-nam-den1-t3321c8571__2__c5d7daba63cf4fdbae72f85f6fa433b2_master.jpg"
                   alt="Product"
                   className="object-cover w-full h-56 transition-transform duration-500 hover:scale-110"
                 />
