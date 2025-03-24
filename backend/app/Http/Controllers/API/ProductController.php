@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Product;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+
+
 
 class ProductController extends Controller
 {
@@ -28,6 +31,10 @@ class ProductController extends Controller
         }
     }
 
+
+
+
+
     /**
      * Show the form for creating a new resource.
      */
@@ -43,6 +50,29 @@ class ProductController extends Controller
     {
         //
     }
+    public function getProductsByCategory(Request $request)
+    {
+        try {
+            $categorySlug = $request->query('category');
+
+            if (!$categorySlug) {
+                return response()->json(['error' => 'Category not specified'], 400);
+            }
+
+            $products = Product::whereHas('category', function ($query) use ($categorySlug) {
+                $query->where('slug', $categorySlug);
+            })->get();
+
+            if ($products->isEmpty()) {
+                return response()->json(['error' => 'No products found in this category'], 404);
+            }
+
+            return response()->json(['products' => $products], 200);
+
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
 
     /**
      * Display the specified resource.
@@ -57,7 +87,8 @@ class ProductController extends Controller
             }
             return response()->json([
                 'message' => 'Success get product',
-                'product' => $product]);
+                'product' => $product
+            ]);
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
@@ -92,7 +123,7 @@ class ProductController extends Controller
                 'message' => 'Success delete product',
                 'product' => $product
             ], 200);
-        }catch (Exception $e) {
+        } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }

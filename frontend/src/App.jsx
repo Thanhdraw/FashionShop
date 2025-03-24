@@ -4,7 +4,8 @@ import Home from "./pages/shop/Home";
 import Header from "./components/layout/Header";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import CategoryPage from "./pages/shop/CategoryPage";
-
+import ProductPage from "./pages/shop/ProductPage";
+import ProductDetailPage from "./pages/shop/ProductDetailPage";
 export default function App() {
   return (
     <Router>
@@ -15,6 +16,8 @@ export default function App() {
           <Route path="/" element={<Home />} />
           {/* Thêm các route khác nếu cần */}
           <Route path="/category" element={<CategoryPage />} />
+          <Route path="/category/:category" element={<ProductPage />} />
+          <Route path="/product/:id" element={<ProductDetailPage />} />
         </Routes>
       </Layout>
     </Router>

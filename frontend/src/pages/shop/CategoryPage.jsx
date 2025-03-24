@@ -15,7 +15,6 @@ const CategoryPage = () => {
         const data = await getCategories();
         console.log("Dữ liệu trả về từ API:", data);
 
-        // Kiểm tra nếu data là một object chứa mảng categories
         if (data && Array.isArray(data.categories)) {
           setCategories(data.categories);
         } else if (Array.isArray(data)) {

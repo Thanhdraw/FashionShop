@@ -3,7 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
-
+use App\Http\Controllers\API\ProductController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -23,6 +23,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::apiResource('categories', App\Http\Controllers\API\CategoryController::class);
 Route::apiResource('products', App\Http\Controllers\API\ProductController::class);
 
+
+
+Route::get('/products-by-category', [ProductController::class, 'getProductsByCategory']);
 
 
 Route::post('/register', [AuthController::class, 'register']);

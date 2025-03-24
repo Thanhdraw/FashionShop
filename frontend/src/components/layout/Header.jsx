@@ -1,7 +1,42 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { getCategories } from "../../services/categoryService";
 
 const Header = () => {
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const data = await getCategories();
+        console.log("Dữ liệu trả về từ API:", data);
+
+        if (data && typeof data === "object") {
+          if (Array.isArray(data.categories)) {
+            setCategories(data.categories);
+          } else if (Array.isArray(data)) {
+            setCategories(data);
+          } else {
+            console.error("Dữ liệu không hợp lệ:", data);
+            throw new Error("Dữ liệu API không hợp lệ.");
+          }
+        } else {
+          throw new Error("Dữ liệu API không hợp lệ.");
+        }
+      } catch (err) {
+        console.error(err);
+        setError("Không thể tải danh mục.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+  if (loading) return <p>Đang tải danh mục...</p>;
+  if (error) return <p className="text-red-500">{error}</p>;
+
   return (
     <header className="bg-white shadow-md">
       {/* Top bar */}
@@ -69,49 +104,22 @@ const Header = () => {
                 Trang chủ
               </a>
             </li>
-            <li>
-              <Link
-                to="/category"
-                className="font-medium text-gray-600 hover:text-pink-500"
-              >
-                Tất cả danh mục
-              </Link>
-            </li>
-            <li>
-              <a href="#" className="text-gray-600 hover:text-pink-500">
-                Nữ
-              </a>
-            </li>
-            <li>
-              <a href="#" className="text-gray-600 hover:text-pink-500">
-                Nam
-              </a>
-            </li>
-            <li>
-              <a href="#" className="text-gray-600 hover:text-pink-500">
-                Trẻ em
-              </a>
-            </li>
-            <li>
-              <a href="#" className="text-gray-600 hover:text-pink-500">
-                Phụ kiện
-              </a>
-            </li>
-            <li>
-              <a href="#" className="text-gray-600 hover:text-pink-500">
-                Khuyến mãi
-              </a>
-            </li>
-            <li>
-              <a href="#" className="text-gray-600 hover:text-pink-500">
-                Bộ sưu tập
-              </a>
-            </li>
-            <li>
-              <a href="#" className="text-gray-600 hover:text-pink-500">
-                Blog
-              </a>
-            </li>
+            <Link
+              to="/category"
+              className="font-medium text-gray-600 hover:text-pink-500"
+            >
+              Tất cả danh mục
+            </Link>
+            {categories.map((category) => (
+              <li key={category.id}>
+                <Link
+                  to={`/category/${category.slug}`}
+                  className="font-medium text-gray-600 hover:text-pink-500"
+                >
+                  {category.name}
+                </Link>
+              </li>
+            ))}
           </ul>
         </div>
       </nav>
