@@ -1,33 +1,38 @@
 import { useParams } from "react-router-dom";
 import ProductList from "../../components/common/ProductList";
-
-const categories = [
-  {
-    id: 1,
-    name: "Thời trang nữ",
-    image: "/api/placeholder/400/500",
-    link: "#",
-    description: "Khám phá bộ sưu tập thời trang dành cho phái đẹp",
-  },
-  {
-    id: 2,
-    name: "Thời trang nam",
-    image: "/api/placeholder/400/500",
-    link: "#",
-    description: "Phong cách lịch lãm và cá tính cho quý ông",
-  },
-  {
-    id: 3,
-    name: "Phụ kiện",
-    image: "/api/placeholder/400/500",
-    link: "#",
-    description: "Hoàn thiện phong cách với các phụ kiện thời trang",
-  },
-];
+import { use, useState, useEffect } from "react";
+import { getCategories } from "../../services/categoryService";
 
 const CategoryPage = () => {
   const { slug } = useParams(); // Lấy slug từ URL nếu có dùng Router
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const data = await getCategories();
+        console.log("Dữ liệu trả về từ API:", data);
+
+        // Kiểm tra nếu data là một object chứa mảng categories
+        if (data && Array.isArray(data.categories)) {
+          setCategories(data.categories);
+        } else if (Array.isArray(data)) {
+          setCategories(data);
+        } else {
+          throw new Error("Dữ liệu không hợp lệ.");
+        }
+      } catch (err) {
+        console.error(err);
+        setError("Không thể tải danh mục.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
   return (
     <div className="py-16 bg-gradient-to-b from-gray-50 to-white">
       <div className="container max-w-6xl px-4 mx-auto">

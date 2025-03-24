@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   return (
@@ -69,12 +70,12 @@ const Header = () => {
               </a>
             </li>
             <li>
-              <a
-                href="/category"
+              <Link
+                to="/category"
                 className="font-medium text-gray-600 hover:text-pink-500"
               >
                 Tất cả danh mục
-              </a>
+              </Link>
             </li>
             <li>
               <a href="#" className="text-gray-600 hover:text-pink-500">
