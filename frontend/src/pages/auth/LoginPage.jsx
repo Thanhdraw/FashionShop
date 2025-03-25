@@ -2,6 +2,10 @@ import { useState } from "react";
 // import { useAuth } from "../../context/AuthContext"; // Bỏ comment và import đúng
 import { Link, useNavigate } from "react-router-dom";
 import { login } from "../../services/authService";
+import { useAuth } from "../../context/auth/AuthContext";
+
+import api from "../../services/api";
+
 function LoginPage() {
   // const { login } = useAuth(); // Lấy hàm login từ AuthContext
   const navigate = useNavigate();
@@ -9,18 +13,27 @@ function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const { login } = useAuth();
 
   const handleLogin = async (e) => {
-    e.preventDefault(); // Viết hoa D
+    e.preventDefault();
     try {
-      await login({
-        email: email,
-        password: password,
-      });
-      alert("Đăng nhap thanh công");
-      navigate("/"); // Điều hướng về trang chủ
-    } catch (err) {
-      setError(`Error: ${err.message || err}`);
+      const response = await api.post("/login", { email, password });
+
+      // Assuming the API returns a token and user data
+      const { token, user } = response.data;
+
+      // Store token in localStorage
+      localStorage.setItem("token", token);
+
+      // Update user in context
+      login(user);
+
+      // Redirect to home or dashboard
+      window.location.href = "/";
+    } catch (error) {
+      console.error("Login failed:", error);
+      alert("Đăng nhập thất bại");
     }
   };
 

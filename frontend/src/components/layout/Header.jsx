@@ -4,24 +4,20 @@ import { getCategories } from "../../services/categoryService";
 import { getUser } from "../../services/authService";
 import { FaUserCircle } from "react-icons/fa";
 import api from "../../services/api";
+import { useAuth } from "../../context/auth/AuthContext";
 
 const Header = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [user, setUser] = useState();
+  const { user, logout } = useAuth();
+
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const data = await getCategories();
         console.log("Dữ liệu trả về từ API:", data);
 
-        const userData = await getUser();
-        if (userData) {
-          setUser(userData);
-        } else {
-          setUser(null); // Nếu không có user, đặt null
-        }
         if (data && typeof data === "object") {
           if (Array.isArray(data.categories)) {
             setCategories(data.categories);
@@ -44,25 +40,6 @@ const Header = () => {
 
     fetchCategories();
   }, []);
-  const handleLogout = async () => {
-    try {
-      // Gọi API để logout
-      await api.post("/logout");
-
-      // Xóa token khỏi localStorage
-      localStorage.removeItem("token");
-
-      setUser(null);
-
-      // Hiển thị thông báo
-      alert("Đăng xuất thành công");
-
-      window.location.href = "/login";
-    } catch (error) {
-      console.error("Lỗi khi logout:", error);
-      alert("Có lỗi khi đăng xuất. Vui lòng thử lại.");
-    }
-  };
 
   if (loading) return <p>Đang tải danh mục...</p>;
   if (error) return <p className="text-red-500">{error}</p>;
@@ -81,7 +58,7 @@ const Header = () => {
               <div className="flex items-center space-x-2">
                 <FaUserCircle size={24} />
                 <button
-                  onClick={handleLogout}
+                  onClick={logout}
                   className="text-sm hover:text-gray-300"
                 >
                   Đăng xuất
