@@ -1,17 +1,27 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { getCategories } from "../../services/categoryService";
+import { getUser } from "../../services/authService";
+import { FaUserCircle } from "react-icons/fa";
+import api from "../../services/api";
 
 const Header = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [user, setUser] = useState();
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const data = await getCategories();
         console.log("Dữ liệu trả về từ API:", data);
 
+        const userData = await getUser();
+        if (userData) {
+          setUser(userData);
+        } else {
+          setUser(null); // Nếu không có user, đặt null
+        }
         if (data && typeof data === "object") {
           if (Array.isArray(data.categories)) {
             setCategories(data.categories);
@@ -34,6 +44,26 @@ const Header = () => {
 
     fetchCategories();
   }, []);
+  const handleLogout = async () => {
+    try {
+      // Gọi API để logout
+      await api.post("/logout");
+
+      // Xóa token khỏi localStorage
+      localStorage.removeItem("token");
+
+      setUser(null);
+
+      // Hiển thị thông báo
+      alert("Đăng xuất thành công");
+
+      window.location.href = "/login";
+    } catch (error) {
+      console.error("Lỗi khi logout:", error);
+      alert("Có lỗi khi đăng xuất. Vui lòng thử lại.");
+    }
+  };
+
   if (loading) return <p>Đang tải danh mục...</p>;
   if (error) return <p className="text-red-500">{error}</p>;
 
@@ -46,12 +76,28 @@ const Header = () => {
             Miễn phí vận chuyển cho đơn hàng trên 500.000đ
           </p>
           <div className="flex space-x-4">
-            <a href="#" className="text-sm hover:text-gray-300">
-              Đăng nhập
-            </a>
-            <a href="#" className="text-sm hover:text-gray-300">
-              Đăng ký
-            </a>
+            {user ? (
+              // Đã đăng nhập -> Hiện avatar & Logout
+              <div className="flex items-center space-x-2">
+                <FaUserCircle size={24} />
+                <button
+                  onClick={handleLogout}
+                  className="text-sm hover:text-gray-300"
+                >
+                  Đăng xuất
+                </button>
+              </div>
+            ) : (
+              // Chưa đăng nhập -> Hiện Đăng nhập & Đăng ký
+              <>
+                <Link to="/login" className="text-sm hover:text-gray-300">
+                  Đăng nhập
+                </Link>
+                <Link to="/register" className="text-sm hover:text-gray-300">
+                  Đăng ký
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </div>
