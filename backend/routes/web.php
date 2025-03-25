@@ -19,6 +19,6 @@ Route::get('/', function () {
 
 
 Route::get('/login', function () {
-    return "i am admin";
+    return view('dasboard');
 
 });
