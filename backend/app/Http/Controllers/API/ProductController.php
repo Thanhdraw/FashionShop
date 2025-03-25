@@ -81,7 +81,7 @@ class ProductController extends Controller
     {
         //
         try {
-            $product = Product::findorFail($id);
+            $product = Product::with('sizes')->find($id);
             if (!$product) {
                 return response()->json(['error' => 'Product not found'], 404);
             }
