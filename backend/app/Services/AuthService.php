@@ -6,7 +6,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-
+use App\Models\Role;
 
 class AuthService implements AuthServiceInterface
 {
@@ -16,8 +16,12 @@ class AuthService implements AuthServiceInterface
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
-        ]);
 
+        ]);
+        $role = Role::where('name', 'user')->first();
+        if ($role) {
+            $user->roles()->attach($role->id); // Gán role vào bảng role_user
+        }
         return $user->createToken('auth_token')->plainTextToken;
     }
 

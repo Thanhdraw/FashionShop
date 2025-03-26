@@ -29,6 +29,9 @@ export const getUser = async () => {
     ); // Debug
 
     const response = await api.get("/user");
+    console.log(response.data); // Kiểm tra response
+    // console.log("Roles:", response.data.role); // Kiểm tra roles
+
     return response.data;
   } catch (error) {
     throw error.response?.data || { message: "Không lấy được thông tin user" };

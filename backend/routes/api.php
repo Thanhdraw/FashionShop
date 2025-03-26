@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\ProductController;
+use App\Http\Controllers\API\UserController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -20,8 +22,9 @@ Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logo
 
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return response()->json($request->user());
+    return response()->json($request->user()->load('roles'));
 });
+
 
 
 Route::apiResource('categories', App\Http\Controllers\API\CategoryController::class);

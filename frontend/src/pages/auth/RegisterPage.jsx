@@ -35,6 +35,7 @@ function RegisterPage() {
         email: email,
         password: password,
         password_confirmation: confirmPass,
+        role: "user",
       });
 
       // Giả lập đăng ký thành công
