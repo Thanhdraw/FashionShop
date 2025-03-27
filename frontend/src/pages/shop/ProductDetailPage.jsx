@@ -2,6 +2,7 @@ import React, { use, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import api from "../../services/api";
 import { useNavigate } from "react-router-dom"; // Thêm useNavigate
+import { useCart } from "../../context/cart/CartContext"; // Import context
 
 const ProductDetailPage = () => {
   const { id } = useParams();
@@ -12,7 +13,7 @@ const ProductDetailPage = () => {
   const [quantity, setQuantity] = useState(1);
   const navigate = useNavigate();
   const [cartItems, setCartItems] = useState([]); // Lưu danh sách sản phẩm trong giỏ
-
+  const { addToCart } = useCart();
   const [cart, setCart] = useState([]);
   const handleAddToCart = () => {
     if (!selectedSize) {
@@ -23,15 +24,15 @@ const ProductDetailPage = () => {
     const newItem = {
       id: product.id,
       name: product.name,
-      price: product.sale_price || product.price, // Giá giảm nếu có
+      price: product.sale_price || product.price,
       size: selectedSize.name,
-      quantity: quantity,
+      quantity,
       image: product.image,
     };
 
-    setCartItems((prevCart) => [...prevCart, newItem]); // Thêm sản phẩm vào giỏ
-    console.log(newItem);
+    addToCart(newItem); // Thêm vào giỏ hàng dùng context
 
+    console.log("Giỏ hàng sau khi thêm:", cartItems); // Debug
     alert("Sản phẩm đã được thêm vào giỏ hàng!");
   };
 
@@ -42,6 +43,7 @@ const ProductDetailPage = () => {
         setProduct(response.data.product);
       } catch (error) {
         console.error("Lỗi khi tải chi tiết sản phẩm:", error);
+        setError(error);
       } finally {
         setLoading(false);
       }
@@ -89,7 +91,7 @@ const ProductDetailPage = () => {
           <p className="mt-2 text-xl font-semibold text-red-500">
             {product.price}đ
           </p>
-          {/* Chọn size */}
+
           <div className="mt-4">
             <h3 className="text-lg font-semibold">Chọn size:</h3>
             <div className="flex gap-2 mt-2">
@@ -108,7 +110,6 @@ const ProductDetailPage = () => {
               ))}
             </div>
           </div>
-          {/* Quantity Selector */}
           <div className="flex items-center gap-4 mt-4">
             <span className="font-semibold">Số lượng:</span>
             <button

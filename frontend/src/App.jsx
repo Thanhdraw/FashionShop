@@ -8,23 +8,25 @@ import ProductPage from "./pages/shop/ProductPage";
 import ProductDetailPage from "./pages/shop/ProductDetailPage";
 import LoginPage from "./pages/auth/LoginPage";
 import RegisterPage from "./pages/auth/RegisterPage";
+import CartPage from "./pages/shop/CartPage";
+import { CartProvider } from "./context/cart/CartContext";
 
 export default function App() {
   return (
-    <Router>
-      {/* Layout chứa Header, Footer, v.v. */}
-      <Layout>
-        {/* Định nghĩa các route */}
-        <Routes>
-          <Route path="/" element={<Home />} />
-          {/* Thêm các route khác nếu cần */}
-          <Route path="/category" element={<CategoryPage />} />
-          <Route path="/category/:category" element={<ProductPage />} />
-          <Route path="/product/:id" element={<ProductDetailPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-        </Routes>
-      </Layout>
-    </Router>
+    <CartProvider>
+      <Router>
+        <Layout>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/category" element={<CategoryPage />} />
+            <Route path="/category/:category" element={<ProductPage />} />
+            <Route path="/product/:id" element={<ProductDetailPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/cart" element={<CartPage />} />
+          </Routes>
+        </Layout>
+      </Router>
+    </CartProvider>
   );
 }
