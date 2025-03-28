@@ -59,16 +59,17 @@ class ProductController extends Controller
                 return response()->json(['error' => 'Category not specified'], 400);
             }
 
-            $products = Product::whereHas('category', function ($query) use ($categorySlug) {
-                $query->where('slug', $categorySlug);
-            })->get();
+            // ✅ Lấy sản phẩm theo danh mục và kèm theo size
+            $products = Product::with('sizes')
+                ->whereHas('category', function ($query) use ($categorySlug) {
+                    $query->where('slug', $categorySlug);
+                })->get();
 
             if ($products->isEmpty()) {
                 return response()->json(['error' => 'No products found in this category'], 404);
             }
 
             return response()->json(['products' => $products], 200);
-
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }

@@ -5,12 +5,13 @@ export const getProductsByCategory = async (categoryName) => {
     const response = await api.get(
       `/products-by-category?category=${categoryName}`
     );
-    return response.data.products;
+
+    return { products: response.data.products };
   } catch (error) {
     console.error(
       "Lỗi khi tải sản phẩm:",
       error.response?.data || error.message
     );
-    return [];
+    return { products: [] };
   }
 };

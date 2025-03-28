@@ -26,6 +26,7 @@ export function CartProvider({ children }) {
         return [...prevCart, { ...product, quantity: product.quantity || 1 }];
       }
     });
+    alert("them san pham thanh cong");
   };
 
   // Cập nhật số lượng sản phẩm
@@ -35,6 +36,12 @@ export function CartProvider({ children }) {
         item.id === id ? { ...item, quantity: newQuantity } : item
       )
     );
+  };
+
+  const clearCart = () => {
+    if (confirm("Bạn có muốn xóa toàn bộ giỏ hàng?")) {
+      setCartItems([]);
+    }
   };
 
   // Xóa sản phẩm khỏi giỏ hàng
@@ -55,6 +62,7 @@ export function CartProvider({ children }) {
         addToCart,
         updateQuantity,
         removeFromCart,
+        clearCart,
         totalPrice,
       }}
     >
