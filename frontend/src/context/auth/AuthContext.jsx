@@ -10,17 +10,21 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const checkUserStatus = async () => {
       try {
-        // Check if token exists in localStorage
         const token = localStorage.getItem("token");
         if (token) {
-          // Attempt to get user data
           const userData = await getUser();
-          setUser(userData);
+          if (userData) {
+            setUser(userData);
+          } else {
+            console.warn("User data is null");
+          }
         }
       } catch (error) {
+        if (error.response && error.response.status === 401) {
+          console.log("Unauthorized, logging out...");
+          localStorage.removeItem("token");
+        }
         console.error("Error checking user status:", error);
-        setUser(null);
-        localStorage.removeItem("token");
       } finally {
         setLoading(false);
       }

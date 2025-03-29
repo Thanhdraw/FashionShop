@@ -1,6 +1,13 @@
+import axios from "axios";
 import { createContext, useContext, useState } from "react";
+import api from "../../services/api"; // Sửa lại đường dẫn
+import { getUser } from "../../services/authService";
+import { useAuth } from "../auth/AuthContext";
+// useAuth
 
 const CartContext = createContext({
+  // Lấy user từ context
+
   cartItems: [], // Đảm bảo mặc định là mảng rỗng
   addToCart: () => {},
   removeFromCart: () => {},
@@ -55,6 +62,40 @@ export function CartProvider({ children }) {
     0
   );
 
+  const orderCart = async (userId) => {
+    // Nhận userId từ component
+    if (!userId) {
+      console.error("Lỗi: Không tìm thấy userId");
+      return;
+    }
+
+    const data = {
+      user_id: userId, // ✅ Truyền userId thay vì gọi useAuth
+      cartItems,
+      totalPrice,
+      shipping_address: "123 ABC Street",
+      billing_address: "123 ABC Street",
+      phone_number: "0123456789",
+    };
+
+    console.log("Thanh toán: ", data);
+
+    try {
+      const response = await api.post("/order", data, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      console.log("Phản hồi từ server:", response.data);
+    } catch (error) {
+      console.error(
+        "Lỗi khi đặt hàng:",
+        error.response ? error.response.data : error.message
+      );
+    }
+  };
+
   return (
     <CartContext.Provider
       value={{
@@ -63,6 +104,7 @@ export function CartProvider({ children }) {
         updateQuantity,
         removeFromCart,
         clearCart,
+        orderCart,
         totalPrice,
       }}
     >

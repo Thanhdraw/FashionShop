@@ -23,17 +23,15 @@ export const login = async (userLogin) => {
 
 export const getUser = async () => {
   try {
-    console.log(
-      "Sending request to /user with token:",
-      localStorage.getItem("token")
-    ); // Debug
-
-    const response = await api.get("/user");
-    console.log(response.data); // Kiểm tra response
-    // console.log("Roles:", response.data.role); // Kiểm tra roles
-
+    const token = localStorage.getItem("token");
+    console.log("Token:", token); // ✅ Kiểm tra token có tồn tại không
+    const response = await api.get("/user", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    console.log("User data:", response.data); // ✅ Kiểm tra dữ liệu API trả về
     return response.data;
   } catch (error) {
-    throw error.response?.data || { message: "Không lấy được thông tin user" };
+    console.error("Error fetching user:", error);
+    return null;
   }
 };

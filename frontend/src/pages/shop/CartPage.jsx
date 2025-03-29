@@ -1,14 +1,21 @@
 import React from "react";
 import { useCart } from "../../context/cart/CartContext";
-
+import { useAuth } from "../../context/auth/AuthContext";
 const CartPage = () => {
+  const { user } = useAuth();
   const {
     cartItems = [],
     removeFromCart,
     updateQuantity,
     totalPrice,
+    orderCart,
     clearCart,
   } = useCart();
+
+  const getOrder = (e) => {
+    e.preventDefault();
+    orderCart(user?.id);
+  };
 
   console.log("Cart Items:", cartItems);
 
@@ -100,7 +107,10 @@ const CartPage = () => {
           </div>
 
           <div className="text-center">
-            <button className="w-full py-3 text-lg font-bold text-white transition-colors bg-blue-600 rounded-lg hover:bg-blue-700">
+            <button
+              onClick={getOrder}
+              className="w-full py-3 text-lg font-bold text-white transition-colors bg-blue-600 rounded-lg hover:bg-blue-700"
+            >
               Tiến hành thanh toán
             </button>
           </div>
